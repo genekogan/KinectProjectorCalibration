@@ -95,7 +95,7 @@ void fpsGui() {
   fill(0);
   rect(2, 2, 200, 27);
   fill(255);
-  text("FPS: "+ nf(frameRate, 0, 1) + " ("+gfxMode+")", 5, 28);
+  text("FPS: "+ nf(frameRate, 0, 1), 5, 28);
   popStyle();
 }
 
