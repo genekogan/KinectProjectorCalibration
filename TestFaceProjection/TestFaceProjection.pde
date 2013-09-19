@@ -8,6 +8,7 @@ ArrayList<User> users;
 void setup()
 {
   size(displayWidth, displayHeight, P2D); 
+  rectMode(CENTER);
   
   // set up kinect
   kinect = new SimpleOpenNI(this);

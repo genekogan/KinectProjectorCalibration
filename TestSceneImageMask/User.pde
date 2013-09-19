@@ -42,6 +42,21 @@ class User
     setMaskColor();
   }
   
+  void setShader(int idx) {
+    if (idx!=shaderIdx) {
+      shaderIdx = idx;
+      shade = loadShader(shaders[shaderIdx]);
+      shade.set("resolution", float(gfxWidth), float(gfxHeight));
+      if (shaderIdx < 3) {
+        shade.set("color", 0.5, 0.2, 0.9);
+        shade.set("rate", 0.01);
+        shade.set("center", gfxWidth/2.0, gfxHeight/4.0);
+      } else if (shaderIdx == 3) {
+        shade.set("freq", 70.0, 50.0);
+      }    
+    }
+  }
+  
   void setMaskColor() 
   {
     float[] col = userColors[userId % userColors.length];

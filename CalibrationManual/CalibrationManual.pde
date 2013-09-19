@@ -71,6 +71,7 @@ void keyPressed()
     int x = (int) map(mouseX, 0, width, 0, kinect.depthWidth());
     int y = (int) map(mouseY, 0, height, 0, kinect.depthHeight());
     pk0 = getDepthMapAt(x, y);
+    if (pk0.z == 0)  pk.set(0, 0, 0);
     if (calibrated) pp0 = convertKinectToProjector(pk0);
   }
   

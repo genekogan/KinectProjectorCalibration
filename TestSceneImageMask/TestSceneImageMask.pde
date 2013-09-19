@@ -8,7 +8,7 @@ float[] projectorMatrix;
 PGraphics gfx_mapped;
 int gfxWidth, gfxHeight;
 ArrayList<User> users;
-float downSampleFactor = 0.33333;
+float downSampleFactor = 0.3;
 int mode = 0;
 
 void setup()
@@ -32,6 +32,7 @@ void draw()
   depthMap = kinect.depthMapRealWorld();
   sceneMap = kinect.sceneMap();
   
+  int n = gfxWidth*gfxHeight-2;
   // get bounding box for users
   gfx_mapped.beginDraw();
   gfx_mapped.rectMode(CENTER);
@@ -50,7 +51,26 @@ void draw()
         int idxScene = sceneMap[x+y*kinect.depthWidth()];
         if (idxScene > 0) {
           float[] col = userColors[idxScene % userColors.length];
-          gfx_mapped.pixels[(int)p.x+(int)p.y*gfxWidth] = color(255*col[0], 255*col[1], 255*col[2]);
+          //gfx_mapped.pixels[(int)p.x+(int)p.y*gfxWidth] = color(255*col[0], 255*col[1], 255*col[2]);
+          color c = color(255*col[0], 255*col[1], 255*col[2]);
+          int idx1 = constrain((int)p.x+(int)p.y*gfxWidth, 1, n);
+          int idx2 = idx1-1;
+          int idx3 = idx1+1;
+          int idx4 = constrain(idx1-gfxWidth, 1, n);
+          int idx5 = constrain(idx1+gfxWidth, 1, n);
+          int idx6 = idx4-1;
+          int idx7 = idx4+1;
+          int idx8 = idx5-1;
+          int idx9 = idx5+1;
+          gfx_mapped.pixels[idx1] = c;
+          gfx_mapped.pixels[idx2] = c;
+          gfx_mapped.pixels[idx3] = c;
+          gfx_mapped.pixels[idx4] = c;
+          gfx_mapped.pixels[idx5] = c;
+          gfx_mapped.pixels[idx6] = c;
+          gfx_mapped.pixels[idx7] = c;
+          gfx_mapped.pixels[idx8] = c;
+          gfx_mapped.pixels[idx9] = c;
         }
       }
     }
@@ -97,6 +117,9 @@ void fpsGui() {
   fill(255);
   text("FPS: "+ nf(frameRate, 0, 1), 5, 28);
   popStyle();
+  
+  int t = (int)(0.333*millis()/1000.0) % shaders.length;
+  for (User u:users)  u.setShader(t);
 }
 
 void keyPressed() {
