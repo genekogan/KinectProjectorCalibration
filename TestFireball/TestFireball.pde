@@ -15,7 +15,7 @@ void setup()
   kinect = new SimpleOpenNI(this);
   kinect.setMirror(false);
   kinect.enableDepth();
-  kinect.enableUser(SimpleOpenNI.SKEL_PROFILE_ALL);
+  kinect.enableUser();
   
   projectorMatrix = loadCalibration("calib1.txt");
   
@@ -68,8 +68,8 @@ void renderFireball() {
 PVector convertKinectToProjector(PVector kp) {
   PVector pp = new PVector();
   float denom = projectorMatrix[8]*kp.x + projectorMatrix[9]*kp.y + projectorMatrix[10]*kp.z + 1.0;
-  pp.x = (projectorMatrix[0]*kp.x + projectorMatrix[1]*kp.y + projectorMatrix[2]*kp.z + projectorMatrix[3]) / denom;
-  pp.y = (projectorMatrix[4]*kp.x + projectorMatrix[5]*kp.y + projectorMatrix[6]*kp.z + projectorMatrix[7]) / denom;
+  pp.x = width * (projectorMatrix[0]*kp.x + projectorMatrix[1]*kp.y + projectorMatrix[2]*kp.z + projectorMatrix[3]) / denom;
+  pp.y = height * (projectorMatrix[4]*kp.x + projectorMatrix[5]*kp.y + projectorMatrix[6]*kp.z + projectorMatrix[7]) / denom;
   return pp;
 }
 

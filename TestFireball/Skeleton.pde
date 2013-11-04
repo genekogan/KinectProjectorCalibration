@@ -2,21 +2,21 @@
 void drawProjectedSkeleton(int userId) 
 {
   if(kinect.isTrackingSkeleton(userId)) {
-    PVector pHead = getJoint(userId, SimpleOpenNI.SKEL_HEAD);
-    PVector pNeck = getJoint(userId, SimpleOpenNI.SKEL_NECK);
-    PVector pTorso = getJoint(userId, SimpleOpenNI.SKEL_TORSO);
-    PVector pLeftShoulder = getJoint(userId, SimpleOpenNI.SKEL_LEFT_SHOULDER);
-    PVector pRightShoulder = getJoint(userId, SimpleOpenNI.SKEL_RIGHT_SHOULDER);
-    PVector pLeftElbow = getJoint(userId, SimpleOpenNI.SKEL_LEFT_ELBOW);
-    PVector pRightElbow = getJoint(userId, SimpleOpenNI.SKEL_RIGHT_ELBOW);
-    PVector pLeftHand = getJoint(userId, SimpleOpenNI.SKEL_LEFT_HAND);
-    PVector pRightHand = getJoint(userId, SimpleOpenNI.SKEL_RIGHT_HAND);      
-    PVector pLeftHip = getJoint(userId, SimpleOpenNI.SKEL_LEFT_HIP);
-    PVector pRightHip = getJoint(userId, SimpleOpenNI.SKEL_RIGHT_HIP);
-    PVector pLeftKnee = getJoint(userId, SimpleOpenNI.SKEL_LEFT_KNEE);
-    PVector pRightKnee = getJoint(userId, SimpleOpenNI.SKEL_RIGHT_KNEE);
-    PVector pLeftFoot = getJoint(userId, SimpleOpenNI.SKEL_LEFT_FOOT);
-    PVector pRightFoot = getJoint(userId, SimpleOpenNI.SKEL_RIGHT_FOOT);
+    PVector pHead = getProjectedJoint(userId, SimpleOpenNI.SKEL_HEAD);
+    PVector pNeck = getProjectedJoint(userId, SimpleOpenNI.SKEL_NECK);
+    PVector pTorso = getProjectedJoint(userId, SimpleOpenNI.SKEL_TORSO);
+    PVector pLeftShoulder = getProjectedJoint(userId, SimpleOpenNI.SKEL_LEFT_SHOULDER);
+    PVector pRightShoulder = getProjectedJoint(userId, SimpleOpenNI.SKEL_RIGHT_SHOULDER);
+    PVector pLeftElbow = getProjectedJoint(userId, SimpleOpenNI.SKEL_LEFT_ELBOW);
+    PVector pRightElbow = getProjectedJoint(userId, SimpleOpenNI.SKEL_RIGHT_ELBOW);
+    PVector pLeftHand = getProjectedJoint(userId, SimpleOpenNI.SKEL_LEFT_HAND);
+    PVector pRightHand = getProjectedJoint(userId, SimpleOpenNI.SKEL_RIGHT_HAND);      
+    PVector pLeftHip = getProjectedJoint(userId, SimpleOpenNI.SKEL_LEFT_HIP);
+    PVector pRightHip = getProjectedJoint(userId, SimpleOpenNI.SKEL_RIGHT_HIP);
+    PVector pLeftKnee = getProjectedJoint(userId, SimpleOpenNI.SKEL_LEFT_KNEE);
+    PVector pRightKnee = getProjectedJoint(userId, SimpleOpenNI.SKEL_RIGHT_KNEE);
+    PVector pLeftFoot = getProjectedJoint(userId, SimpleOpenNI.SKEL_LEFT_FOOT);
+    PVector pRightFoot = getProjectedJoint(userId, SimpleOpenNI.SKEL_RIGHT_FOOT);
     
     stroke(0, 0, 255);
     strokeWeight(16);
@@ -56,7 +56,7 @@ void drawProjectedSkeleton(int userId)
 }
 
 
-PVector getJoint(int userId, int jointIdx) {
+PVector getProjectedJoint(int userId, int jointIdx) {
   PVector jointKinectRealWorld = new PVector();
   PVector jointProjected = new PVector();
   kinect.getJointPositionSkeleton(userId, jointIdx, jointKinectRealWorld);
@@ -75,72 +75,25 @@ PVector getJointRealWorld(int userId, int jointIdx) {
 // SimpleOpenNI events
 //  - do not need to modify these...
 
-boolean  autoCalib=true;
-
-void onNewUser(int userId)
+void onNewUser(SimpleOpenNI curContext,int userId)
 {
   println("onNewUser - userId: " + userId);
-  println("  start pose detection");
+  println("\tstart tracking skeleton");
   
-  if(autoCalib)
-    kinect.requestCalibrationSkeleton(userId,true);
-  else    
-    kinect.startPoseDetection("Psi",userId);
+  kinect.startTrackingSkeleton(userId);
+  users.add(new User(userId));
 }
 
-void onLostUser(int userId)
+void onLostUser(SimpleOpenNI curContext,int userId)
 {
   println("onLostUser - userId: " + userId);
-  for (User u : users) {
+  for (User u : users)
     if (u.userId == userId)  users.remove(u);
-  }
 }
 
-void onExitUser(int userId)
+void onVisibleUser(SimpleOpenNI curContext,int userId)
 {
-  println("onExitUser - userId: " + userId);
+  //println("onVisibleUser - userId: " + userId);
 }
 
-void onReEnterUser(int userId)
-{
-  println("onReEnterUser - userId: " + userId);
-}
-
-void onStartCalibration(int userId)
-{
-  println("onStartCalibration - userId: " + userId);
-}
-
-void onEndCalibration(int userId, boolean successfull)
-{
-  println("onEndCalibration - userId: " + userId + ", successfull: " + successfull);
-  
-  if (successfull) 
-  { 
-    println("  User calibrated !!!");
-    kinect.startTrackingSkeleton(userId); 
-    users.add(new User(userId));
-  } 
-  else 
-  { 
-    println("  Failed to calibrate user !!!");
-    println("  Start pose detection");
-    kinect.startPoseDetection("Psi",userId);
-  }
-}
-
-void onStartPose(String pose,int userId)
-{
-  println("onStartPose - userId: " + userId + ", pose: " + pose);
-  println(" stop pose detection");
-  
-  kinect.stopPoseDetection(userId); 
-  kinect.requestCalibrationSkeleton(userId, true);
- 
-}
-
-void onEndPose(String pose,int userId)
-{
-  println("onEndPose - userId: " + userId + ", pose: " + pose);
-}
 

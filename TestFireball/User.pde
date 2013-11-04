@@ -22,8 +22,8 @@ class User
     // check left hand
     if (dl > maxDist) {
       if (!hasFiredLeft) {
-        PVector ctr = getJoint(userId, SimpleOpenNI.SKEL_LEFT_HAND);
-        PVector torso = getJoint(userId, SimpleOpenNI.SKEL_TORSO);
+        PVector ctr = getProjectedJoint(userId, SimpleOpenNI.SKEL_LEFT_HAND);
+        PVector torso = getProjectedJoint(userId, SimpleOpenNI.SKEL_TORSO);
         PVector vel = PVector.sub(ctr, torso);
         fireballs.add(new Fireball(ctr, vel));
         hasFiredLeft = true;
@@ -35,8 +35,8 @@ class User
     // check right hand
     if (dr > maxDist) {
       if (!hasFiredRight) {
-        PVector ctr = getJoint(userId, SimpleOpenNI.SKEL_RIGHT_HAND);
-        PVector torso = getJoint(userId, SimpleOpenNI.SKEL_TORSO);
+        PVector ctr = getProjectedJoint(userId, SimpleOpenNI.SKEL_RIGHT_HAND);
+        PVector torso = getProjectedJoint(userId, SimpleOpenNI.SKEL_TORSO);
         PVector vel = PVector.sub(ctr, torso);
         fireballs.add(new Fireball(ctr, vel));
         hasFiredRight = true;

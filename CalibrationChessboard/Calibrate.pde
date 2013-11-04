@@ -17,6 +17,7 @@ void calibrate() {
     A.set(i, 8, -projC.x*kc.x);
     A.set(i, 9, -projC.x*kc.y);
     A.set(i,10, -projC.x*kc.z);
+    
     y.set(i, 0, projC.x);
  
     A.set(i+1, 0, 0);
@@ -30,6 +31,7 @@ void calibrate() {
     A.set(i+1, 8, -projC.y*kc.x);
     A.set(i+1, 9, -projC.y*kc.y);
     A.set(i+1,10, -projC.y*kc.z);
+    
     y.set(i+1, 0, projC.y);
   }
   QRDecomposition problem = new QRDecomposition(A);
@@ -39,18 +41,22 @@ void calibrate() {
  
 PVector convertKinectToProjector(PVector kp) {
   PVector out = new PVector();
-  out.x = ((float)x.get(0,0)*kp.x + (float)x.get(1,0)*kp.y + (float)x.get(2,0)*kp.z + (float)x.get(3,0))/
-          ((float)x.get(8,0)*kp.x + (float)x.get(9,0)*kp.y + (float)x.get(10,0)*kp.z + 1);
-  out.y = ((float)x.get(4,0)*kp.x + (float)x.get(5,0)*kp.y + (float)x.get(6,0)*kp.z + (float)x.get(7,0))/
-          ((float)x.get(8,0)*kp.x + (float)x.get(9,0)*kp.y + (float)x.get(10,0)*kp.z + 1);
+  float denom = (float)x.get(8,0)*kp.x + (float)x.get(9,0)*kp.y + (float)x.get(10,0)*kp.z + 1;
+  out.x = pWidth * ((float)x.get(0,0)*kp.x + (float)x.get(1,0)*kp.y + (float)x.get(2,0)*kp.z + (float)x.get(3,0)) / denom;
+  out.y = pHeight * ((float)x.get(4,0)*kp.x + (float)x.get(5,0)*kp.y + (float)x.get(6,0)*kp.z + (float)x.get(7,0)) / denom;
+  //println("===1====");
+  //println(kp);
+  //println("===2====");
+  //println(new PVector(out.x/pWidth, out.y/pHeight));
+  //println("===3====");
+  
   return out;
 }
 
 String[] getCalibrationString() {
   String[] coeffs = new String[11];
-  for (int i=0; i<11; i++) {
+  for (int i=0; i<11; i++)
     coeffs[i] = ""+x.get(i,0);
-  }
   return coeffs;
 }
 

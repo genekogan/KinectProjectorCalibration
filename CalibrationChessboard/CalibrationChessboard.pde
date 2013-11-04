@@ -24,7 +24,8 @@ boolean testingMode = false;
 boolean viewRgb = true;
 int cx, cy, cwidth;
 
-void setup() {
+void setup() 
+{
   size(1150, 620);
   textFont(createFont("Courier", 24));
   frameBoard = new ChessboardFrame();
@@ -76,7 +77,7 @@ void drawGui()
   textSize(22);
   fill(255);
   text("Kinect Image", 5, -5);
-  if (viewRgb)  image(kinect.rgbImage(), 0, 0);
+  if (viewRgb)  image(kinect.rgbImage(),   0, 0);
   else          image(kinect.depthImage(), 0, 0);
 
   // draw chessboard corners, if found
@@ -115,7 +116,7 @@ ArrayList<PVector> drawChessboard(int x0, int y0, int cwidth) {
     for (int i=0; i<5; i++) {
       int x = int(x0 + map(i, 0, 5, 0, cwidth));
       int y = int(y0 + map(j, 0, 4, 0, cheight));
-      if (i>0 && j>0)  projPoints.add(new PVector(x, y));
+      if (i>0 && j>0)  projPoints.add(new PVector((float)x/pWidth, (float)y/pHeight));
       if ((i+j)%2==0)  ca.rect(x, y, cwidth/5, cheight/4);
     }
   }  
@@ -158,6 +159,8 @@ void mousePressed() {
   if (calibrated && testingMode) {
     testPoint = new PVector(constrain(mouseX-10, 0, kinect.depthWidth()-1), 
                             constrain(mouseY-40, 0, kinect.depthHeight()-1));
+    //println("=====0======");
+    //println(testPoint);
     int idx = kinect.depthWidth() * (int) testPoint.y + (int) testPoint.x;
     testPointP = convertKinectToProjector(depthMap[idx]);
   }
