@@ -13,6 +13,7 @@ void setup()
   kinect.setMirror(false);
   kinect.enableDepth();
   kinect.enableUser();
+  kinect.alternativeViewPointDepthToImage();
   
   projectorMatrix = loadCalibration("calib1.txt");
 }

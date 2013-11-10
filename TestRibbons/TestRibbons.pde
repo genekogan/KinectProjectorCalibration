@@ -6,10 +6,9 @@ import SimpleOpenNI.*;
 OpenCV opencv;
 SimpleOpenNI kinect;
 PGraphics pgKinect;
-ArrayList<Contour> contours;
+ArrayList<ArrayList<PVector>> contours;
 PVector[] depthMapRealWorld;
 float[] projectorMatrix;
-PGraphics pgGfx, pgMask, pgFinal;
 
 void setup() 
 {
@@ -25,14 +24,19 @@ void setup()
 
   // initialize pgraphics objects
   pgKinect = createGraphics(kinect.depthWidth(), kinect.depthHeight());
-  pgGfx = createGraphics(width, height, P2D);
-  pgMask = createGraphics(width, height);
-  pgFinal = createGraphics(width, height, P2D);
 
-  // initialize graphics
-  pgGfx.beginDraw();
-  pgGfx.background(0, 255, 0);
-  pgGfx.endDraw();
+  setupBlobWindow();
+  
+  ribbonWidth = 4;
+  ribbonNoise = 0.01;
+  ribbonRate = 4;
+  ribbonAge = 15;
+  ribbonSpeed = 6;
+  ribbonLength = 60;
+  ribbonMargin = 30;
+  ribbonColored = false;
+  ribbonCurved = false;
+
 }
 
 void draw() 
@@ -48,43 +52,43 @@ void draw()
   pgKinect.endDraw();
   opencv.loadImage(pgKinect);
   opencv.threshold(KINECT_THRESH);
-  contours = opencv.findContours();
+  contours = getContours(opencv.findContours());
 
-  // draw mask  
-  pgMask.beginDraw();
-  pgMask.background(0);  
-  for (Contour contour : contours) {
-    Rectangle r = contour.getBoundingBox();
-    if (r.width * r.height > MIN_BB) {
-      ArrayList<PVector> pts = contour.getPoints();      
-      pgMask.noStroke();
-      pgMask.fill(255);      
-      pgMask.beginShape();      
-      for (PVector p : pts) {
-        PVector pp = convertKinectToProjector(getDepthMapAt((int)p.x, (int)p.y));
-        pgMask.vertex(pp.x, pgMask.height-pp.y);
-      }
-      pgMask.endShape();
-    }
-  }
-  pgMask.endDraw();
-  
-  // draw graphics
-  pgGfx.beginDraw();
-  pgGfx.noStroke();
-  pgGfx.fill(random(255), random(255), random(255), 100);
-  pgGfx.rect(random(pgGfx.width), random(pgGfx.height), random(200, 400), random(200, 400));
-  pgGfx.endDraw();  
 
-  // apply mask
-  pgFinal.beginDraw();
-  pgFinal.image(pgGfx, 0, 0);
-  pgFinal.endDraw();
-  pgFinal.mask(pgMask);
-
-  // final render
   background(0);
-  image(pgFinal, 0, 0);
+  image(kinect.depthImage(), 0, 0);
+  renderContours();
+  addNewRibbon();
+  
+    /*
+  for (ArrayList<PVector> contour : contours) {
+    stroke(255, 0, 0);
+    strokeWeight(4);
+    noFill();
+    beginShape();
+    for (PVector p : contour) {
+      vertex(p.x, p.y);
+    }
+    endShape();
+  }
+  */
+  /*
+  for (Contour contour : contours) {
+    Rectangle bb = contour.getBoundingBox();
+    if (bb.width * bb.height > MIN_BB) {
+      ArrayList<PVector> pts = contour.getPoints();
+      beginShape();
+      stroke(255, 0, 0);
+      strokeWeight(4);
+      noFill();
+      for (PVector p : pts) {
+        vertex(p.x, p.y);
+      }
+      endShape();
+    }
+  }    
+  */
+
 }
 
 PVector getDepthMapAt(int x, int y) {

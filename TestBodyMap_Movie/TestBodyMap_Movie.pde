@@ -61,7 +61,7 @@ void draw()
       pgMask.beginShape();      
       for (PVector p : pts) {
         PVector pp = convertKinectToProjector(getDepthMapAt((int)p.x, (int)p.y));
-        pgMask.vertex(pp.x, pp.y);
+        pgMask.vertex(pp.x, pgMask.height-pp.y);
       }
       pgMask.endShape();
     }

@@ -14,6 +14,7 @@ void setup()
   kinect = new SimpleOpenNI(this);
   kinect.setMirror(false);
   kinect.enableDepth();
+  kinect.alternativeViewPointDepthToImage();
   kinect.enableUser();
   
   projectorMatrix = loadCalibration("calib1.txt");
@@ -47,7 +48,7 @@ class User {
 }
   
 PVector getDepthMapAt(int x, int y) {
-  PVector dm = depthMapRealWorld[kinect.depthWidth() * y + x];
+  PVector dm = depthMap[kinect.depthWidth() * y + x];
   return new PVector(dm.x, dm.y, dm.z);
 }
 
