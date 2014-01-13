@@ -1,5 +1,7 @@
 ## Kinect-Projector calibration
 
+This repository contains initial research and development into [KinectProjectorToolkit, a Processing library for aligning a Kinect to a Projector](https://github.com/genekogan/KinectProjectorToolkit).
+
 Processing code for calibrating kinect and projector together, such that projector image is automatically aligned with the physical space it is projecting onto, facilitating the projection of graphics onto moving bodies.
 
 There is a "calibration module" program which goes through the process of calibrating the kinect and projector together by manually collecting several dozen pairs of aligned points from the two devices. The end result is a text file containing 11 numbers which represent the free parameters of the projection matrix used to convert 3d kinect points to 2d projector coordinates. This file is then used by the other programs (named "Test__") which demonstrate various applications of the calibration.
